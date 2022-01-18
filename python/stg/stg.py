@@ -214,14 +214,16 @@ class STG(object):
         meters=None, early_stop=None, print_interval=1):
         if meters is None:
             meters = GroupMeters()
-
         for epoch in range(1, 1 + nr_epochs):
             meters.reset()
             if epoch == self.freeze_onward:
                 self._model.freeze_weights()
             self.train_epoch(data_loader, meters=meters)
-            if verbose and epoch % print_interval == 0:
-                self.validate(val_data_loader, self.metric, meters)
+            if verbose and epoch % print_interval == 0:  #here is where we put our new function of saving best weight
+                self.validate(val_data_loader, self.metric, meters) #this returns meters.avg, but does it just update meters.avg?
+                #try printing meters.avg each time
+                print(meters.avg)
+                
                 caption = 'Epoch: {}:'.format(epoch)
                 print(meters.format_simple(caption))
             if early_stop is not None:
