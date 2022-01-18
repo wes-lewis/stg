@@ -51,10 +51,10 @@ def _standard_truncnorm_sample(lower_bound, upper_bound, sample_shape=torch.Size
     return x
 
 
-class STG(object): #add variable 'best_val' to keep track of best validation score
+class STG(object): #add variable 'best_val' to keep track of best validation score, model_num to keep track of ith model
     def __init__(self, device, input_dim=784, output_dim=10, hidden_dims=[400, 200], activation='relu', sigma=0.5, lam=0.1,
                 optimizer='Adam', learning_rate=1e-5,  batch_size=100, freeze_onward=None, feature_selection=True, weight_decay=1e-3, 
-                task_type='classification', report_maps=False, random_state=1, extra_args=None, best_val=0):
+                task_type='classification', report_maps=False, random_state=1, extra_args=None, best_val=0, model_num=1):
         #attach best_val to instance of self
         self.best_val = best_val
         self.batch_size = batch_size
@@ -223,6 +223,7 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             self.train_epoch(data_loader, meters=meters)
             if verbose and epoch % print_interval == 0:  #here is where we put our new function of saving best weight
                 self.validate(val_data_loader, self.metric, meters) #this returns meters.avg, but does it just update meters.avg?
+                #meters.avg reterns {k: m.avg for k, m in self._meters.items() if m.count > 0}
                 #try printing meters.avg each time
                 print(meters.avg)
                 
@@ -246,8 +247,13 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             val_CI = calc_concordance_index(pred['logits'].detach().numpy(), 
                     feed_dict['E'].detach().numpy(), feed_dict['T'].detach().numpy())
             result = as_float(result)
+        
         else:
             raise NotImplementedError()
+        #Save best val and checkpoint for best run
+        if result < self.best_val
+            self.best_val=result
+            self.save_checkpoint(str(model_num)+"th_"+'model_best.pth')
 
         if meters is not None:
             meters.update({mode+'_loss':result})
