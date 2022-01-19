@@ -254,7 +254,7 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             
         #Save best val and checkpoint for best run
         #Rather than making this default behavior, should add a parameter to toggle this
-        if result > self.best_val:
+        if val_CI > self.best_val:
             print("Updating Best Result")
             self.best_val=result
             #save checkpoint if save_best_par
