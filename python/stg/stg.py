@@ -51,10 +51,10 @@ def _standard_truncnorm_sample(lower_bound, upper_bound, sample_shape=torch.Size
     return x
 
 
-class STG(object): #add variable 'best_val' to keep track of best validation score, model_num to keep track of ith model
+class STG(object): #add variable 'best_val' to keep track of best validation score, model_pref to keep track of i-th model
     def __init__(self, device, input_dim=784, output_dim=10, hidden_dims=[400, 200], activation='relu', sigma=0.5, lam=0.1,
                 optimizer='Adam', learning_rate=1e-5,  batch_size=100, freeze_onward=None, feature_selection=True, weight_decay=1e-3, 
-                task_type='classification', report_maps=False, random_state=1, extra_args=None, best_val=0, model_num=1):
+                task_type='classification', report_maps=False, random_state=1, extra_args=None, best_val=0, model_pref="", save_best_par = False):
         #attach best_val to instance of self
         self.best_val = best_val
         self.batch_size = batch_size
@@ -250,10 +250,13 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
         
         else:
             raise NotImplementedError()
+            
         #Save best val and checkpoint for best run
-        if result < self.best_val
+        if result > self.best_val:
             self.best_val=result
-            self.save_checkpoint(str(model_num)+"th_"+'model_best.pth')
+            #save checkpoint if save_best_par
+            if self.save_best_par=True:
+                self.save_checkpoint(str(model_pref)+"th_"+'model_best.pth')
 
         if meters is not None:
             meters.update({mode+'_loss':result})
