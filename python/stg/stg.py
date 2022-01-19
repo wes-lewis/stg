@@ -256,7 +256,7 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
         #Rather than making this default behavior, should add a parameter to toggle this
         if val_CI > self.best_val:
             print("Updating Best Result")
-            self.best_val=result
+            self.best_val=val_CI
             #save checkpoint if save_best_par
             if self.save_best_par:
                 self.save_checkpoint(str(self.model_pref)+"th_"+'model_best.pth')
