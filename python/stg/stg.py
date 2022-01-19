@@ -259,7 +259,7 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             self.best_val=result
             #save checkpoint if save_best_par
             if self.save_best_par:
-                self.save_checkpoint(str(model_pref)+"th_"+'model_best.pth')
+                self.save_checkpoint(str(self.model_pref)+"th_"+'model_best.pth')
 
         if meters is not None:
             meters.update({mode+'_loss':result})
