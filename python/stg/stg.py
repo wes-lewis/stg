@@ -55,9 +55,11 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
     def __init__(self, device, input_dim=784, output_dim=10, hidden_dims=[400, 200], activation='relu', sigma=0.5, lam=0.1,
                 optimizer='Adam', learning_rate=1e-5,  batch_size=100, freeze_onward=None, feature_selection=True, weight_decay=1e-3, 
                 task_type='classification', report_maps=False, random_state=1, extra_args=None, best_val=0, model_pref="", save_best_par = False):
-        #attach best_val and save_best_par to instance of self
+        #attach best_val, model_pref, and save_best_par to instance of self
         self.best_val = best_val
+        self.model_pref = model_pref
         self.save_best_par = save_best_par
+        
         self.batch_size = batch_size
         self.activation = activation
         self.device = self.get_device(device)
