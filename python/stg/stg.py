@@ -224,8 +224,6 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             if verbose and epoch % print_interval == 0:  #here is where we put our new function of saving best weight
                 self.validate(val_data_loader, self.metric, meters) #this returns meters.avg, but does it just update meters.avg?
                 #meters.avg reterns {k: m.avg for k, m in self._meters.items() if m.count > 0}
-                #try printing meters.avg each time
-                print(meters.avg)
                 
                 caption = 'Epoch: {}:'.format(epoch)
                 print(meters.format_simple(caption))
@@ -252,7 +250,9 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             raise NotImplementedError()
             
         #Save best val and checkpoint for best run
+        #Rather than making this default behavior, should add a parameter to toggle this
         if result > self.best_val:
+            print("Updating Best Result")
             self.best_val=result
             #save checkpoint if save_best_par
             if self.save_best_par=True:
