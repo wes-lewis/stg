@@ -101,7 +101,6 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             else:
                 return MLPClassificationModel(input_dim, output_dim, hidden_dims, activation=activation)
         elif task_type == 'regression':
-            assert output_dim == 1
             self.metric = nn.MSELoss()
             self.tensor_names = ('input','label')
             if self.extra_args is not None:
@@ -135,8 +134,8 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
         self._optimizer.step()
         #probe_infnan(logits, 'logits')
         if self.task_type=='cox':
-            ci = calc_concordance_index(logits.detach().numpy(), 
-                    feed_dict['E'].detach().numpy(), feed_dict['T'].detach().numpy())
+            ci = calc_concordance_index(logits.detach().cpu().numpy(), 
+                    feed_dict['E'].detach().cpu().numpy(), feed_dict['T'].detach().cpu().numpy())
         if self.extra_args=='l1-softthresh':
             self._model.mlp[0][0].weight.data = self._model.prox_op(self._model.mlp[0][0].weight)
 
@@ -245,8 +244,8 @@ class STG(object): #add variable 'best_val' to keep track of best validation sco
             
         elif self.task_type == 'cox':
             result = metric(pred['logits'], self._model._get_fail_indicator(feed_dict), 'noties') 
-            val_CI = calc_concordance_index(pred['logits'].detach().numpy(), 
-                    feed_dict['E'].detach().numpy(), feed_dict['T'].detach().numpy())
+            val_CI = calc_concordance_index(pred['logits'].detach().cpu().numpy(), 
+                    feed_dict['E'].detach().cpu().numpy(), feed_dict['T'].detach().cpu().numpy())
             result = as_float(result)
         
         else:
