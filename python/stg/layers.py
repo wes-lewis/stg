@@ -82,32 +82,32 @@ class Linear_relu(nn.Module):
         return self.model(x)
 
 
-class Model(nn.Module):
-    
-    def __init__(self, wr, dr):
-        super(Model, self).__init__()
-        self.forward_main = nn.Sequential(
-                  ConcreteDropout(Linear_relu(1, nb_features), input_shape=1, wr=wr, dr=dr),
-                  ConcreteDropout(Linear_relu(nb_features, nb_features), input_shape=nb_features, wr=wr, dr=dr),
-                  ConcreteDropout(Linear_relu(nb_features, nb_features), input_shape=nb_features, wr=wr, dr=dr))
-        self.forward_mean = ConcreteDropout(Linear_relu(nb_features, D), input_shape=nb_features, wr=wr, dr=dr)
-        self.forward_logvar = ConcreteDropout(Linear_relu(nb_features, D), input_shape=nb_features, wr=wr, dr=dr)
-        
-    def forward(self, x):
-        x = self.forward_main(x)
-        mean = self.forward_mean(x)
-        log_var = self.forward_logvar(x)
-        return mean, log_var
+#class Model(nn.Module):
+#   
+#   def __init__(self, wr, dr):
+#       super(Model, self).__init__()
+#       self.forward_main = nn.Sequential(
+#                 ConcreteDropout(Linear_relu(1, nb_features), input_shape=1, wr=wr, dr=dr),
+#                 ConcreteDropout(Linear_relu(nb_features, nb_features), input_shape=nb_features, wr=wr, dr=dr),
+#                 ConcreteDropout(Linear_relu(nb_features, nb_features), input_shape=nb_features, wr=wr, dr=dr))
+#       self.forward_mean = ConcreteDropout(Linear_relu(nb_features, D), input_shape=nb_features, wr=wr, dr=dr)
+#       self.forward_logvar = ConcreteDropout(Linear_relu(nb_features, D), input_shape=nb_features, wr=wr, dr=dr)
+#       
+#   def forward(self, x):
+#       x = self.forward_main(x)
+#       mean = self.forward_mean(x)
+#       log_var = self.forward_logvar(x)
+#       return mean, log_var
 
-    def heteroscedastic_loss(self, true, mean, log_var):
-        precision = torch.exp(-log_var)
-        return torch.sum(precision * (true - mean)**2 + log_var)
-    
-    def regularisation_loss(self):
-        reg_loss = self.forward_main[0].regularisation()+self.forward_main[1].regularisation()+self.forward_main[2].regularisation()
-        reg_loss += self.forward_mean.regularisation()
-        reg_loss += self.forward_logvar.regularisation()
-        return reg_loss
+#   def heteroscedastic_loss(self, true, mean, log_var):
+#       precision = torch.exp(-log_var)
+#       return torch.sum(precision * (true - mean)**2 + log_var)
+#   
+#   def regularisation_loss(self):
+#       reg_loss = self.forward_main[0].regularisation()+self.forward_main[1].regularisation()+self.forward_main[2].regularisation()
+#       reg_loss += self.forward_mean.regularisation()
+#       reg_loss += self.forward_logvar.regularisation()
+#       return reg_loss
 
 
 class FeatureSelector(nn.Module):
